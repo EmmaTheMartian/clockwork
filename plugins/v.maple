@@ -1,0 +1,18 @@
+config:v = 'v';
+config:main = '.';
+
+task:run = {
+	actions = '${v} run ${main}'
+}
+
+task:build = {
+	actions = '${v} build ${main}'
+}
+
+task:build.prod = {
+	run = '${v} -prod build ${main}';
+}
+
+task:test = {
+	actions = '${v} test ${main}'
+}

@@ -1,0 +1,22 @@
+config:cc = 'gcc';
+config:build_dir = 'build';
+
+task:build = {
+	run = [
+		'mkdir -p ${build_dir}',
+		'${cc} -o ${build_dir}/echo echo.c'
+	]
+}
+
+task:run = {
+	depends = [ 'build' ]
+	run = '${build_dir}/echo ${args}';
+}
+
+task:clean = {
+	run = 'rm -rf ${build_dir}';
+}
+
+task:cleanrun = {
+	depends = [ 'clean', 'run' ]
+}

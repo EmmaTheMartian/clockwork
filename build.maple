@@ -1,0 +1,9 @@
+plugins = [
+	'plugins/v.maple'
+]
+
+config:v = './v/v';
+
+task:test.example = {
+	run = 'cd example && ../${v} run .. run ${args}';
+}
