@@ -1,6 +1,11 @@
+module main
+
 import emmathemartian.maple
 import os
 import log
+
+pub const global_data_dir = os.join_path(os.config_dir()!, 'clockwork')
+pub const global_plugin_dir = os.join_path(global_data_dir, 'plugins')
 
 struct Task {
 pub mut:
@@ -65,9 +70,10 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 	// Load plugins
 	if 'plugins' in data {
 		for plugin in data.get('plugins').to_array() {
-			con.load_config(maple.load_file('${plugin.to_str()}.maple') or {
+			path := plugin.to_str().replace('@', global_plugin_dir) + '.maple'
+			con.load_config(maple.load_file(path) or {
 				log.error(err.str())
-				panic('Could not load plugin `${plugin}.maple`')
+				panic('Could not load plugin `${path}`')
 			})
 		}
 	}
@@ -103,6 +109,13 @@ fn main() {
 	logger.set_custom_time_format('hh:mm:ss')
 	logger.set_level(.debug)
 	log.set_logger(logger)
+
+	if !os.exists(global_plugin_dir) {
+		os.mkdir_all(global_plugin_dir) or {
+			log.error(err.str())
+			panic('Failed to create global config directory: ${global_plugin_dir}')
+		}
+	}
 
 	mut con := BuildContext{}
 

@@ -3,11 +3,31 @@ plugins = [
 ]
 
 task:test.example = {
-	run = 'cd example && ${v:v} run .. run ${args}';
+	run = 'cd example && ${v} run .. run ${args}';
+}
+
+task:test.example.prebuilt = {
+	run = 'cd example && clockwork run ${args}';
 }
 
 task:test.echo = {
 	run = 'echo "Hello, World!"';
 }
 
-task:b = { depends = [ 'v:build' ] }
+task:test = {
+	depends = [
+		'test.echo'
+		'test.example'
+	]
+}
+
+task:install = {
+	depends = [ 'build.prod' ]
+	run = [
+		'mkdir -p ~/.local/bin/',
+		'cp ${v_build_dir}/${v_build_filename} ~/.local/bin/clockwork',
+		'mkdir -p ~/.config/clockwork/',
+		'cp -r ./plugins ~/.config/clockwork/',
+		'echo "Installed, make sure to add \$HOME/.local/bin/ to \$PATH if needed."'
+	]
+}

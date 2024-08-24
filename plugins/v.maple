@@ -3,24 +3,28 @@ config:v_main = '.';
 config:v_build_dir = 'build';
 config:v_build_filename = 'main';
 
+// Args are passed to the program
 task:run = {
-	run = '${v} run ${v_main}';
+	run = '${v} run ${v_main} ${args}';
 }
 
+// Args are passed to the V compiler
 task:build = {
 	actions = [
 		'mkdir -p ${v_build_dir}',
-		'${v} -o ${v_build_dir}/${v_build_filename} ${v_main}'
+		'${v} -o ${v_build_dir}/${v_build_filename} ${args} ${v_main}'
 	]
 }
 
+// Args are passed to the V compiler
 task:build.prod = {
 	run = [
 		'mkdir -p ${v_build_dir}',
-		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${v_main}'
+		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${args} ${v_main}'
 	]
 }
 
+// Args are passed to the program
 task:test = {
-	actions = '${v} test ${v_main}';
+	actions = '${v} test ${v_main} ${args}';
 }
