@@ -10,7 +10,7 @@ task:run = {
 
 // Args are passed to the V compiler
 task:build = {
-	actions = [
+	run = [
 		'mkdir -p ${v_build_dir}',
 		'${v} -o ${v_build_dir}/${v_build_filename} ${args} ${v_main}'
 	]
@@ -26,5 +26,5 @@ task:build.prod = {
 
 // Args are passed to the program
 task:test = {
-	actions = '${v} test ${v_main} ${args}';
+	run = '${v} test ${v_main} ${args}';
 }
