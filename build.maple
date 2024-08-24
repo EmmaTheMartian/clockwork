@@ -1,9 +1,13 @@
 plugins = [
-	'plugins/v.maple'
+	'plugins/v'
 ]
 
-config:v = './v/v';
-
 task:test.example = {
-	run = 'cd example && ../${v} run .. run ${args}';
+	run = 'cd example && ${v:v} run .. run ${args}';
 }
+
+task:test.echo = {
+	run = 'echo "Hello, World!"';
+}
+
+task:b = { depends = [ 'v:build' ] }

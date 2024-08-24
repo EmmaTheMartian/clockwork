@@ -1,18 +1,26 @@
 config:v = 'v';
-config:main = '.';
+config:v_main = '.';
+config:v_build_dir = 'build';
+config:v_build_filename = 'main';
 
 task:run = {
-	actions = '${v} run ${main}'
+	run = '${v} run ${v_main}';
 }
 
 task:build = {
-	actions = '${v} build ${main}'
+	actions = [
+		'mkdir -p ${v_build_dir}',
+		'${v} -o ${v_build_dir}/${v_build_filename} ${v_main}'
+	]
 }
 
 task:build.prod = {
-	run = '${v} -prod build ${main}';
+	run = [
+		'mkdir -p ${v_build_dir}',
+		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${v_main}'
+	]
 }
 
 task:test = {
-	actions = '${v} test ${main}'
+	actions = '${v} test ${v_main}';
 }

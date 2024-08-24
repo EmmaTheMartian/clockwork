@@ -1,10 +1,6 @@
 import emmathemartian.maple
 import os
-
-@[inline] fn exec(cmd string, msg string) {
-	println('-> (${msg}) ${cmd}')
-	os.system(cmd)
-}
+import log
 
 struct Task {
 pub mut:
@@ -18,7 +14,7 @@ pub mut:
 	variables map[string]string = {}
 }
 
-@[inline] fn (con BuildContext) format(str string) string {
+@[inline] pub fn (con BuildContext) format(str string) string {
 	mut s := str
 	for key, val in con.variables {
 		s = s.replace('\${${key}}', val)
@@ -36,6 +32,7 @@ pub fn (con BuildContext) run_task(id string) {
 
 	// Run the task
 	task_id := if id.contains_u8(`:`) { id } else { 'task:${id}' }
+	log.info('-> ${id}')
 	if task_id !in con.tasks {
 		panic('No such task: ${task_id}')
 	}
@@ -53,37 +50,66 @@ pub fn (con BuildContext) run_task(id string) {
 	}
 
 	for cmd in task.run {
-		exec(con.format(cmd.to_str()), task_id)
+		f := con.format(cmd)
+		log.info('(${task_id}) -> ${f}')
+		os.system(f)
 	}
 
 	// Post-task task
-	if !is_metatask && 'metatask:post' in con.config {
+	if !is_metatask && 'metatask:post' in con.tasks {
 		con.run_task('metatask:post')
 	}
 }
 
-pub fn (con BuildContext) load_maple(data map[string]maple.ValueT) {
+pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
+	// Load plugins
+	if 'plugins' in data {
+		for plugin in data.get('plugins').to_array() {
+			con.load_config(maple.load_file('${plugin.to_str()}.maple') or {
+				log.error(err.str())
+				panic('Could not load plugin `${plugin}.maple`')
+			})
+		}
+	}
+
+	// Load config options and tasks
 	for key, val in data {
-		if key.starts_with('')
+		if key.starts_with('config:') {
+			con.variables[key.all_after_first(':')] = val.to_str()
+		} else if key.starts_with('task:') {
+			val_map := val.to_map()
+			depends := (if 'depends' in val_map { val.get('depends') } else { []maple.ValueT{} }).to_array().map(|it| it.to_str())
+			run := if 'run' in val_map {
+				r := val.get('run')
+				match r {
+					string { [r] }
+					[]maple.ValueT { r.map(|it| it.to_str()) }
+					else {
+						panic('Invalid value for `run` in task `${key}`')
+					}
+				}
+			} else { []string{} }
+
+			con.tasks[key] = Task{
+				depends: depends
+				run: run
+			}
+		}
 	}
 }
 
 fn main() {
+	mut logger := log.Log{}
+	logger.set_custom_time_format('hh:mm:ss')
+	logger.set_level(.debug)
+	log.set_logger(logger)
+
 	mut con := BuildContext{}
 
-	build_config := maple.load_file('build.maple') or {
-		println(err)
+	con.load_config(maple.load_file('build.maple') or {
+		log.error(err.str())
 		panic('Could not load build.maple')
-	}
-
-	// Load plugins
-	if 'plugins' in build_config.config.to_map() {
-		for plugin in build_config.config.get('plugins').to_array() {
-			
-		}
-	}
-
-	// Load config
+	})
 
 	// Parse arguments
 	mut clockwork_args := []string{}
@@ -100,21 +126,27 @@ fn main() {
 		}
 	}
 
-	// Load variables
-	mut variables := map[string]string{}
-	for key, val in build_config {
-		if key.starts_with('config:') {
-			variables[key.all_after_first(':')] = val.to_str()
-		}
-	}
-
+	// Do argument things
 	if '-no-args' !in clockwork_args {
-		variables['args'] = task_args.map(|it| if it.contains_any(' \r\n\t\f') { '"${it}"' } else { it }).join(' ')
-		variables['raw_args'] = task_args.join(' ')
+		con.variables['args'] = task_args.map(|it| if it.contains_any(' \r\n\t\f') { '"${it}"' } else { it }).join(' ')
+		con.variables['raw_args'] = task_args.join(' ')
 	}
 
-	if '-list-vars' in clockwork_args {
-		println(variables)
+	for arg in clockwork_args {
+		match arg {
+			'-list-vars' {
+				logger.debug(con.variables.str())
+			}
+			'-list-tasks' {
+				logger.debug(con.tasks.keys().str())
+			}
+			'-debug-context' {
+				logger.debug(con.str())
+			}
+			else {
+				log.error('Unknown argument: ${arg}')
+			}
+		}
 	}
 
 	// Run :D
