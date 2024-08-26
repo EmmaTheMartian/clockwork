@@ -40,11 +40,11 @@ Remove the `~/.local/bin/clockwork` executable and `~/.config/clockwork`
 Make a file called `build.maple` in your project's root. Populate it with the
 following:
 
-```toml
-config:msg = 'Hello, World!'
+```maple
+config:msg = 'Hello, World!';
 
 task:hello = {
-	run = 'echo "${msg}"
+	run = 'echo "${msg}"';
 }
 ```
 
