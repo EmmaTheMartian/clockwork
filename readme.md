@@ -41,10 +41,10 @@ Make a file called `build.maple` in your project's root. Populate it with the
 following:
 
 ```maple
-config:msg = 'Hello, World!';
+config:msg = 'Hello, World!'
 
 task:hello = {
-	run = 'echo "${msg}"';
+	run = 'echo "${msg}"'
 }
 ```
 

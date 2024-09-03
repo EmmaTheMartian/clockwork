@@ -1,0 +1,30 @@
+config:cc = 'gcc'
+config:cc_args = ''
+config:c_src = 'main.c'
+config:c_build_dir = 'build'
+config:c_build_filename = 'main'
+
+// Args are passed to the program
+task:run = {
+	depends = [ 'build' ]
+	run = '${c_build_dir}/${c_build_filename} ${args}'
+}
+
+task:build = {
+	run = [
+		'mkdir -p ${c_build_dir}',
+		'${cc} -o ${c_build_dir}/${c_build_filename} ${cc_args} ${c_src}'
+	]
+}
+
+// Compiles with -O3
+task:build.prod = {
+	run = [
+		'mkdir -p ${c_build_dir}',
+		'${cc} -prod -o ${c_build_dir}/${c_build_filename} -O3 ${cc_args} ${c_src}'
+	]
+}
+
+task:clean = {
+	run = 'rm -rf ${c_build_dir}'
+}

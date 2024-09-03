@@ -1,30 +1,37 @@
-config:v = 'v';
-config:v_main = '.';
-config:v_build_dir = 'build';
-config:v_build_filename = 'main';
+config:v = 'v'
+config:v_main = '.'
+config:v_build_dir = 'build'
+config:v_build_filename = 'main'
+config:v_args = ''
+config:v_program_args = ''
 
-// Args are passed to the program
 task:run = {
-	run = '${v} run ${v_main} ${args}';
+	run = '${v} ${v_args} run ${v_main} ${args}'
 }
 
-// Args are passed to the V compiler
 task:build = {
 	run = [
 		'mkdir -p ${v_build_dir}',
-		'${v} -o ${v_build_dir}/${v_build_filename} ${args} ${v_main}'
+		'${v} -o ${v_build_dir}/${v_build_filename} ${v_args} ${v_main}'
 	]
 }
 
-// Args are passed to the V compiler
 task:build.prod = {
 	run = [
 		'mkdir -p ${v_build_dir}',
-		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${args} ${v_main}'
+		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${v_args} ${v_main}'
 	]
 }
 
-// Args are passed to the program
 task:test = {
-	run = '${v} test ${v_main} ${args}';
+	run = '${v} ${v_args} test ${v_main} ${args}'
+}
+
+// Args are passed to the program
+task:watch = {
+	run = '${v} ${v_args} watch run ${v_main} ${args}'
+}
+
+task:clean = {
+	run = 'rm -rf ${build_dir}'
 }

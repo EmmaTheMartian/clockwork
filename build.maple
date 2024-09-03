@@ -3,15 +3,15 @@ plugins = [
 ]
 
 task:test.example = {
-	run = 'cd example && ${v} run .. run ${args}';
+	run = 'cd example && ${v} run .. run ${args}'
 }
 
 task:test.example.prebuilt = {
-	run = 'cd example && clockwork run ${args}';
+	run = 'cd example && clockwork run ${args}'
 }
 
 task:test.echo = {
-	run = 'echo "Hello, World!"';
+	run = 'echo "Hello, World!"'
 }
 
 task:test = {
