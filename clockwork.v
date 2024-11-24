@@ -1,19 +1,21 @@
 module main
 
 import emmathemartian.maple
-import os
 import log
+import flag
+import os
 
+pub const version = '1.0.0'
 pub const global_data_dir = os.join_path(os.config_dir()!, 'clockwork')
 pub const global_plugin_dir = os.join_path(global_data_dir, 'plugins')
 
-struct Task {
+pub struct Task {
 pub mut:
 	depends []string = []
 	run []string = []
 }
 
-struct BuildContext {
+pub struct BuildContext {
 pub mut:
 	tasks map[string]Task = {}
 	variables map[string]string = {}
@@ -72,8 +74,8 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 		for plugin in data.get('plugins').to_array() {
 			path := plugin.to_str().replace('@', global_plugin_dir) + '.maple'
 			con.load_config(maple.load_file(path) or {
-				log.error(err.str())
-				panic('Could not load plugin `${path}`')
+				log.error('Could not load plugin `${path}` (error: ${err})')
+				exit(1)
 			})
 		}
 	}
@@ -91,7 +93,8 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 					string { [r] }
 					[]maple.ValueT { r.map(|it| it.to_str()) }
 					else {
-						panic('Invalid value for `run` in task `${key}`')
+						log.error('Invalid value for `run` in task `${key}`')
+						exit(1)
 					}
 				}
 			} else { []string{} }
@@ -104,24 +107,36 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 	}
 }
 
+@[version: version]
+@[name: 'clockwork']
+struct Flags {
+	version bool @[short: v; xdoc: 'Show version and exit']
+	help bool @[short: h; xdoc: 'Show help and exit']
+	no_task_args bool @[xdoc: 'Prevents task arguments from being passed to tasks']
+	vars bool @[short: V; xdoc: 'Show variables and exit']
+	tasks bool @[short: T; xdoc: 'Show tasks and exit']
+	debug_context bool @[short: D; xdoc: 'Print the stringified context for debugging purposes']
+}
+
 fn main() {
 	mut logger := log.Log{}
 	logger.set_custom_time_format('hh:mm:ss')
 	logger.set_level(.debug)
 	log.set_logger(logger)
 
+	// Make the global config directory if it does not exist
 	if !os.exists(global_plugin_dir) {
 		os.mkdir_all(global_plugin_dir) or {
-			log.error(err.str())
-			panic('Failed to create global config directory: ${global_plugin_dir}')
+			log.error('Failed to create global config directory: ${global_plugin_dir} (error: ${err})')
+			exit(1)
 		}
 	}
 
+	// Get and load the build context
 	mut con := BuildContext{}
-
 	con.load_config(maple.load_file('build.maple') or {
-		log.error(err.str())
-		panic('Could not load build.maple')
+		log.error('Could not load build.maple (error: ${err})')
+		exit(1)
 	})
 
 	// Parse arguments
@@ -139,27 +154,47 @@ fn main() {
 		}
 	}
 
-	// Do argument things
-	if '-no-args' !in clockwork_args {
+	// Parse Clockwork arguments
+	args, no_matches := flag.to_struct[Flags](clockwork_args) or {
+		log.error('Failed to parse arguments (error: ${err})')
+		exit(1)
+	}
+	if no_matches.len > 0 {
+		log.error('Invalid flags: ${no_matches}')
+		exit(1)
+	}
+
+	// Exiting arguments
+	if args.help {
+		doc := flag.to_doc[Flags]()!
+		println(doc)
+		exit(0)
+	} else if args.version {
+		println(version)
+		exit(0)
+	}
+	// Non-exiting arguments
+	if !args.no_task_args {
 		con.variables['args'] = task_args.map(|it| if it.contains_any(' \r\n\t\f') { '"${it}"' } else { it }).join(' ')
 		con.variables['raw_args'] = task_args.join(' ')
 	}
-
-	for arg in clockwork_args {
-		match arg {
-			'-list-vars' {
-				logger.debug(con.variables.str())
-			}
-			'-list-tasks' {
-				logger.debug(con.tasks.keys().str())
-			}
-			'-debug-context' {
-				logger.debug(con.str())
-			}
-			else {
-				log.error('Unknown argument: ${arg}')
-			}
+	if args.vars {
+		for var, val in con.variables {
+			println('${var} = `${val}`')
 		}
+	}
+	if args.tasks {
+		for name, task in con.tasks {
+			// We skip the first 5 characters to get rid of the `task:` prefix
+			print('- ${name[5..]}')
+			if task.depends.len > 0 {
+				print(' (${task.depends.join(', ')})')
+			}
+			println('')
+		}
+	}
+	if args.debug_context {
+		println(con.str())
 	}
 
 	// Run :D

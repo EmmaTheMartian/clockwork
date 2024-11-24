@@ -2,12 +2,14 @@ plugins = [
 	'plugins/v'
 ]
 
+task:deps = { run = 'v install' }
+
 task:test.example = {
-	run = 'cd example && ${v} run .. run ${args}'
+	run = 'cd example && ${v} run .. run "Hello, World!"'
 }
 
 task:test.example.prebuilt = {
-	run = 'cd example && clockwork run ${args}'
+	run = 'cd example && clockwork run "Hello, World!"'
 }
 
 task:test.echo = {
@@ -16,7 +18,7 @@ task:test.echo = {
 
 task:test = {
 	depends = [
-		'test.echo'
+		'test.echo',
 		'test.example'
 	]
 }

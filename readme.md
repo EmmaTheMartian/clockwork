@@ -51,3 +51,9 @@ task:hello = {
 Then run `clockwork hello` to see `Hello, World!` in the terminal.
 
 > For a proper example, see the `example/` directory.
+
+## License
+
+Clockwork is a tiny little project, so I have decided to license it under both
+MIT and the Unlicense. If you want to use the Clockwork source for your own
+purposes, utilize whichever license works best for you :D

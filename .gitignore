@@ -23,5 +23,8 @@ bin/
 *.db
 *.js
 
-# local v install
+# Local V install
 /v/
+
+# Local Clockwork install
+/clockwork/
