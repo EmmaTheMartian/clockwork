@@ -39,6 +39,16 @@ $ git clone https://github.com/emmathemartian/clockwork && cd clockwork && v -pr
 
 Remove the `~/.local/bin/clockwork` executable and `~/.config/clockwork`
 
+## Updating
+
+To update just the Clockwork executable: `clockwork -L clockwork.update`
+
+To update just the configs (this will overwrite any changes made in
+`global.config`, make sure to back it up if you have changed it):
+`clockwork -L clockwork.update_configs`
+
+> `-L` prevents Clockwork from trying to load a local `build.maple`.
+
 ## Basic Rundown
 
 Make a file called `build.maple` in your project's root. Populate it with the
