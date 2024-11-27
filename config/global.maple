@@ -1,0 +1,15 @@
+// This is a global configuration for Clockwork. It will be merged with your
+// local build files when Clockwork is used. Tasks and configs in your local
+// build file will always override those in here.
+
+task:clockwork.update = {
+	help = 'Update Clockwork'
+	work_dir = '${clockwork:global_data_dir}'
+	run = 'v ${clockwork:global_data_dir}/scripts/clockwork.update.vsh'
+}
+
+task:clockwork.update_config = {
+	help = 'Update Clockwork\'s default configs'
+	work_dir = '${clockwork:global_data_dir}'
+	run = 'v ${clockwork:global_data_dir}/scripts/clockwork.update_config.vsh'
+}

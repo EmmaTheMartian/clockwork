@@ -6,10 +6,17 @@ config:v_args = ''
 config:v_program_args = ''
 
 task:run = {
+	help = 'Run v_main. Extra arguments get passed to the program'
 	run = '${v} ${v_args} run ${v_main} ${args}'
 }
 
+task:deps = {
+	help = 'Download project dependencies'
+	run = 'v install'
+}
+
 task:build = {
+	help = 'Build the project'
 	run = [
 		'mkdir -p ${v_build_dir}',
 		'${v} -o ${v_build_dir}/${v_build_filename} ${v_args} ${v_main}'
@@ -17,6 +24,7 @@ task:build = {
 }
 
 task:build.prod = {
+	help = 'Build the project with optimizations enabled'
 	run = [
 		'mkdir -p ${v_build_dir}',
 		'${v} -prod -o ${v_build_dir}/${v_build_filename} ${v_args} ${v_main}'
@@ -24,14 +32,21 @@ task:build.prod = {
 }
 
 task:test = {
+	help = 'Test the project. Extra arguments get passed to the program'
 	run = '${v} ${v_args} test ${v_main} ${args}'
 }
 
-// Args are passed to the program
 task:watch = {
+	help = 'Watch/run the project. Extra arguments get passed to the program'
 	run = '${v} ${v_args} watch run ${v_main} ${args}'
 }
 
 task:clean = {
-	run = 'rm -rf ${build_dir}'
+	help = 'Delete v_build_dir'
+	run = 'rm -rf ${v_build_dir}'
+}
+
+task:fmt = {
+	help = 'Run v fmt on the whole project'
+	run = 'v -w fmt .'
 }

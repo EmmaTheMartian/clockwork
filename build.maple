@@ -1,22 +1,19 @@
 plugins = [
-	'plugins/v'
+	'config/plugins/v'
 ]
 
-task:deps = { run = 'v install' }
-
 task:test.example = {
+	help = 'Tests the example project'
 	run = 'cd example && ${v} run .. run "Hello, World!"'
 }
 
-task:test.example.prebuilt = {
-	run = 'cd example && clockwork run "Hello, World!"'
-}
-
 task:test.echo = {
+	help = 'Tests a simple shell command'
 	run = 'echo "Hello, World!"'
 }
 
 task:test = {
+	help = 'Runs all tests'
 	depends = [
 		'test.echo',
 		'test.example'
@@ -24,12 +21,39 @@ task:test = {
 }
 
 task:install = {
+	help = 'Build and installs Clockwork and its default configs'
+	depends = [ 'build.prod', 'install.config' ]
+	run = [
+		'mkdir -p ~/.local/bin/',
+		'cp ${v_build_dir}/${v_build_filename} ~/.local/bin/clockwork',
+		'echo "Installed, make sure to add \$HOME/.local/bin/ to \$PATH if needed."'
+	]
+}
+
+task:install.noconfig = {
+	help = 'Build and installs Clockwork without installing default configs'
 	depends = [ 'build.prod' ]
 	run = [
 		'mkdir -p ~/.local/bin/',
 		'cp ${v_build_dir}/${v_build_filename} ~/.local/bin/clockwork',
-		'mkdir -p ~/.config/clockwork/',
-		'cp -r ./plugins ~/.config/clockwork/',
 		'echo "Installed, make sure to add \$HOME/.local/bin/ to \$PATH if needed."'
 	]
+}
+
+task:install.config = {
+	help = 'Copies config/ to the global config directory'
+	run = [
+		'mkdir -p ${clockwork:global_data_dir}',
+		'cp -r ./config/* ${clockwork:global_data_dir}'
+	]
+}
+
+task:bump = {
+	help = 'Bumps the Clockwork version'
+	run = 'v bump --${args} v.mod api/api.v'
+}
+
+task:doc = {
+	help = 'Generates HTML documentation for the Clockwork API'
+	run = 'v doc -f html -o doc/ ./api'
 }

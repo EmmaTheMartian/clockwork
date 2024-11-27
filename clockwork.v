@@ -1,121 +1,25 @@
 module main
 
-import emmathemartian.maple
+import api
 import log
-import flag
 import os
+import flag
+import emmathemartian.maple
 
-pub const version = '1.0.0'
-pub const global_data_dir = os.join_path(os.config_dir()!, 'clockwork')
-pub const global_plugin_dir = os.join_path(global_data_dir, 'plugins')
-
-pub struct Task {
-pub mut:
-	depends []string = []
-	run []string = []
-}
-
-pub struct BuildContext {
-pub mut:
-	tasks map[string]Task = {}
-	variables map[string]string = {}
-}
-
-@[inline] pub fn (con BuildContext) format(str string) string {
-	mut s := str
-	for key, val in con.variables {
-		s = s.replace('\${${key}}', val)
-	}
-	return s
-}
-
-pub fn (con BuildContext) run_task(id string) {
-	is_metatask := id.all_before(':') == 'metatask'
-
-	// Pre-task task
-	if !is_metatask && 'metatask:pre' in con.tasks {
-		con.run_task('metatask:pre')
-	}
-
-	// Run the task
-	task_id := if id.contains_u8(`:`) { id } else { 'task:${id}' }
-	log.info('-> ${id}')
-	if task_id !in con.tasks {
-		panic('No such task: ${task_id}')
-	}
-
-	task := con.tasks[task_id]
-
-	for depend in task.depends {
-		depend_id := if depend.contains_u8(`:`) { depend } else { 'task:${depend}' }
-
-		if depend_id == task_id {
-			panic('Cyclic task dependency detected in task:${task_id}')
-		}
-
-		con.run_task(depend_id)
-	}
-
-	for cmd in task.run {
-		f := con.format(cmd)
-		log.info('(${task_id}) -> ${f}')
-		os.system(f)
-	}
-
-	// Post-task task
-	if !is_metatask && 'metatask:post' in con.tasks {
-		con.run_task('metatask:post')
-	}
-}
-
-pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
-	// Load plugins
-	if 'plugins' in data {
-		for plugin in data.get('plugins').to_array() {
-			path := plugin.to_str().replace('@', global_plugin_dir) + '.maple'
-			con.load_config(maple.load_file(path) or {
-				log.error('Could not load plugin `${path}` (error: ${err})')
-				exit(1)
-			})
-		}
-	}
-
-	// Load config options and tasks
-	for key, val in data {
-		if key.starts_with('config:') {
-			con.variables[key.all_after_first(':')] = val.to_str()
-		} else if key.starts_with('task:') {
-			val_map := val.to_map()
-			depends := (if 'depends' in val_map { val.get('depends') } else { []maple.ValueT{} }).to_array().map(|it| it.to_str())
-			run := if 'run' in val_map {
-				r := val.get('run')
-				match r {
-					string { [r] }
-					[]maple.ValueT { r.map(|it| it.to_str()) }
-					else {
-						log.error('Invalid value for `run` in task `${key}`')
-						exit(1)
-					}
-				}
-			} else { []string{} }
-
-			con.tasks[key] = Task{
-				depends: depends
-				run: run
-			}
-		}
-	}
-}
-
-@[version: version]
 @[name: 'clockwork']
+@[version: version]
+@[xdoc: 'usage: clockwork [options] TASKS [task arguments]\n\nTo run multiple tasks, you can separate them by commas (eg: `clockwork fmt,build.prod,test`)']
 struct Flags {
-	version bool @[short: v; xdoc: 'Show version and exit']
-	help bool @[short: h; xdoc: 'Show help and exit']
-	no_task_args bool @[xdoc: 'Prevents task arguments from being passed to tasks']
-	vars bool @[short: V; xdoc: 'Show variables and exit']
-	tasks bool @[short: T; xdoc: 'Show tasks and exit']
-	debug_context bool @[short: D; xdoc: 'Print the stringified context for debugging purposes']
+	// Info
+	version       bool @[short: v; xdoc: 'Show version and exit']
+	help          bool @[short: h; xdoc: 'Show help and exit']
+	vars          bool @[short: a; xdoc: 'Show variables and exit']
+	tasks         bool @[short: t; xdoc: 'Show tasks and exit']
+	debug_context bool @[short: d; xdoc: 'Print the stringified context for debugging purposes']
+	// Functionality
+	no_task_args bool @[short: T; xdoc: 'Prevents task arguments from being passed to tasks']
+	no_global    bool @[short: G; xdoc: 'Disable loading global.maple']
+	no_local     bool @[short: L; xdoc: 'Disable loading build.maple']
 }
 
 fn main() {
@@ -125,19 +29,12 @@ fn main() {
 	log.set_logger(logger)
 
 	// Make the global config directory if it does not exist
-	if !os.exists(global_plugin_dir) {
-		os.mkdir_all(global_plugin_dir) or {
-			log.error('Failed to create global config directory: ${global_plugin_dir} (error: ${err})')
+	if !os.exists(api.global_data_dir) {
+		os.mkdir_all(api.global_data_dir) or {
+			log.error('Failed to create global config directory: ${api.global_data_dir} (error: ${err})')
 			exit(1)
 		}
 	}
-
-	// Get and load the build context
-	mut con := BuildContext{}
-	con.load_config(maple.load_file('build.maple') or {
-		log.error('Could not load build.maple (error: ${err})')
-		exit(1)
-	})
 
 	// Parse arguments
 	mut clockwork_args := []string{}
@@ -164,18 +61,37 @@ fn main() {
 		exit(1)
 	}
 
+	// Get and load the build context
+	mut con := api.BuildContext.new()
+	if !args.no_global {
+		con.load_config(maple.load_file(api.global_config_path) or {
+			log.error('Could not load global.maple (error: ${err})')
+			exit(1)
+		})
+	}
+	if !args.no_local {
+		con.load_config(maple.load_file('build.maple') or {
+			log.error('Could not load build.maple (error: ${err})')
+			exit(1)
+		})
+	}
+
 	// Exiting arguments
 	if args.help {
 		doc := flag.to_doc[Flags]()!
 		println(doc)
 		exit(0)
 	} else if args.version {
-		println(version)
+		println(api.version)
 		exit(0)
 	}
 	// Non-exiting arguments
 	if !args.no_task_args {
-		con.variables['args'] = task_args.map(|it| if it.contains_any(' \r\n\t\f') { '"${it}"' } else { it }).join(' ')
+		con.variables['args'] = task_args.map(|it| if it.contains_any(' \r\n\t\f') {
+			'"${it}"'
+		} else {
+			it
+		}).join(' ')
 		con.variables['raw_args'] = task_args.join(' ')
 	}
 	if args.vars {
@@ -184,21 +100,18 @@ fn main() {
 		}
 	}
 	if args.tasks {
-		for name, task in con.tasks {
-			// We skip the first 5 characters to get rid of the `task:` prefix
-			print('- ${name[5..]}')
-			if task.depends.len > 0 {
-				print(' (${task.depends.join(', ')})')
-			}
-			println('')
-		}
+		con.list_tasks()
 	}
 	if args.debug_context {
 		println(con.str())
 	}
 
 	// Run :D
-	for task in tasks {
-		con.run_task(task)
+	if tasks.len == 0 {
+		log.info('No tasks provided. Use `clockwork --tasks` to list each.')
+	} else {
+		for task in tasks {
+			con.run_task(task)
+		}
 	}
 }

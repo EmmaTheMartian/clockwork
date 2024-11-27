@@ -1,35 +1,37 @@
-# clockwork
+# Clockwork
 
 A language-agnostic build tool wrote to be efficient, easy, and extensible.
 
+> Clockwork is still in beta and is unstable!
+
 ## Installation
 
-### Linux
+### Automatically
 
-On Linux there is a Clockwork task to install itself which we can use here.
+There is a Clockwork task to install itself which we can use here. It is
+designed for Linux but should work on macOS and WSL.
 
-1. `v run . install`
-2. Add `~/.local/bin` to your `$PATH` if it is not already there.
-3. Yeah that's it.
+1. `git clone https://github.com/emmathemartian/clockwork && cd clockwork`
+2. `v run . install`
+3. Add `~/.local/bin` to your `$PATH` if it is not already there.
 
-### Other OSes
-
-I am not familiar with other operating systems and their CLIs, so I do not have
-installation tasks for them (yet). Here are the commands on Unix based systems
-to build and install Clockwork manually.
+### Manually
 
 ```sh
+$ git clone https://github.com/emmathemartian/clockwork
+$ cd clockwork
 $ v -prod -o build/main .
+# You may already have this folder. You can also forego this and copy the built
+# file to another place.
 $ mkdir -p ~/.local/bin/
-$ cp ./build/main ~/.local/bin/
+$ cp ./build/main ~/.local/bin/clockwork
+# Make Clockwork's global config directory and copy the default config there.
 $ mkdir -p ~/.config/clockwork/
-$ cp -r ./plugins ~/.config/clockwork/
+$ cp -r ./config/* ~/.config/clockwork/
 
 # Or in one line:
-$ v -prod -o build/main . && mkdir -p ~/.local/bin/ && cp ./build/main ~/.local/bin/ && mkdir -p ~/.config/clockwork/ && cp -r ./plugins ~/.config/clockwork/
+$ git clone https://github.com/emmathemartian/clockwork && cd clockwork && v -prod -o build/main . && mkdir -p ~/.local/bin/ && cp ./build/main ~/.local/bin/ && mkdir -p ~/.config/clockwork/ && cp -r ./plugins ~/.config/clockwork/
 ```
-
-The commands should be mostly the same on Windows
 
 ## Uninstallation
 

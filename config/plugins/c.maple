@@ -4,21 +4,22 @@ config:c_src = 'main.c'
 config:c_build_dir = 'build'
 config:c_build_filename = 'main'
 
-// Args are passed to the program
 task:run = {
+	help = 'Run c_src. Extra arguments get passed to the program'
 	depends = [ 'build' ]
 	run = '${c_build_dir}/${c_build_filename} ${args}'
 }
 
 task:build = {
+	help = 'Build the project'
 	run = [
 		'mkdir -p ${c_build_dir}',
 		'${cc} -o ${c_build_dir}/${c_build_filename} ${cc_args} ${c_src}'
 	]
 }
 
-// Compiles with -O3
 task:build.prod = {
+	help = 'Build the project with -O3'
 	run = [
 		'mkdir -p ${c_build_dir}',
 		'${cc} -prod -o ${c_build_dir}/${c_build_filename} -O3 ${cc_args} ${c_src}'
@@ -26,5 +27,6 @@ task:build.prod = {
 }
 
 task:clean = {
+	help = 'Delete c_build_dir'
 	run = 'rm -rf ${c_build_dir}'
 }
