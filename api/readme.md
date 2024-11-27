@@ -1,4 +1,4 @@
-# Clockwork Documentation
+## Description
 
 After [installing](https://github.com/EmmaTheMartian/clockwork#Installation)
 Clockwork, you can use it in a project by first creating a `build.maple` in the
@@ -28,7 +28,7 @@ task:release = {
 }
 ```
 
-## Config Specification
+### Config Specification
 
 Config files are wrote in [Maple](https://github.com/emmathemartian/maple), a
 TOML-like config language made to be simple and fast to write in.
@@ -62,7 +62,7 @@ task:[name] (map) = {
 }
 ```
 
-## Complex Tasks
+### Complex Tasks
 
 For a task that may need more complex behaviour, you can use a `.vsh` file in
 another folder. For example:

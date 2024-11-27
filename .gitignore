@@ -19,10 +19,6 @@ bin/
 # ENV
 .env
 
-# vweb and database
-*.db
-*.js
-
 # Local V install
 /v/
 

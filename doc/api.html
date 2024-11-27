@@ -59,7 +59,8 @@
 				<nav class="search hidden"></nav>
 				<nav class="content hidden">
 					<ul>
-						<li class="open"><a href="#Constants">Constants</a></li>
+						<li class="open"><a href="#readme_api">README</a></li>
+<li class="open"><a href="#Constants">Constants</a></li>
 <li class="open"><a href="#BuildContext.new">fn BuildContext.new</a>        <ul>
 </ul>
 </li>
@@ -83,9 +84,57 @@
 			<div class="doc-scrollview" tabindex="-1" id="main-content">
 				<div class="doc-container">
 					<div class="doc-content">
-								<section id="api" class="doc-node">
-			<div class="title"><h1> api</h1></div>
+								<section id="readme_api" class="doc-node">
+			<div class="title"><h1> api <a href="#readme_api">#</a></h1></div>
+<h2>Description</h2><p>After <a href="https://github.com/EmmaTheMartian/clockwork#Installation">installing</a> Clockwork, you can use it in a project by first creating a <code>build.maple</code> in the root of your codebase. Then, populate it with your plugins, configs, and tasks.</p><p>Here is an example config for a V project:</p><pre><code class="language-maple">plugins <span class="token operator">=</span> <span class="token punctuation">[</span> <span class="token string">'@/v'</span> <span class="token punctuation">]</span>
 
+task<span class="token punctuation">:</span>doc <span class="token operator">=</span> <span class="token punctuation">{</span>
+    help <span class="token operator">=</span> <span class="token string">'Runs v doc for the API'</span>
+    run <span class="token operator">=</span> <span class="token string">'v doc -m -f html -o doc/ api/'</span>
+<span class="token punctuation">}</span>
+
+task<span class="token punctuation">:</span>clean_build <span class="token operator">=</span> <span class="token punctuation">{</span>
+    help <span class="token operator">=</span> <span class="token string">'Clean-builds the project'</span>
+    depends <span class="token operator">=</span> <span class="token punctuation">[</span> <span class="token string">'clean'</span><span class="token punctuation">,</span> <span class="token string">'build'</span> <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+
+task<span class="token punctuation">:</span>release <span class="token operator">=</span> <span class="token punctuation">{</span>
+    help <span class="token operator">=</span> <span class="token string">'Bumps the version and builds the project in prod mode'</span>
+    run <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string">'v bump --minor v.mod'</span><span class="token punctuation">,</span>
+        <span class="token string">'v -prod build .'</span>
+    <span class="token punctuation">]</span>
+<span class="token punctuation">}</span></code></pre><h3>Config Specification</h3><p>Config files are wrote in <a href="https://github.com/emmathemartian/maple">Maple</a>, a TOML-like config language made to be simple and fast to write in.</p><blockquote><p>The parenthesis represent the type of the value. Text in [brackets] &gt; represent text to be substituted with something else.</p></blockquote><pre><code class="language-maple"><span class="token comment">// Import other maple files, excluding the `.maple` extension. For global</span>
+<span class="token comment">// plugins, you can use `@/the_plugin_name`. `@` gets replaced with the path to</span>
+<span class="token comment">// the global plugin directory (~/.config/clockwork/plugins on Linux).</span>
+<span class="token function">plugins</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+
+<span class="token comment">// Declare a variable/configuration option.</span>
+config<span class="token punctuation">:</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+
+<span class="token comment">// Define a task. All fields within are optional.</span>
+task<span class="token punctuation">:</span><span class="token punctuation">[</span>name<span class="token punctuation">]</span> <span class="token punctuation">(</span><span class="token builtin">map</span><span class="token punctuation">)</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token comment">// A help message for the task, displayed with `clockwork --tasks`</span>
+    <span class="token function">help</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+
+    <span class="token comment">// A list of tasks that this one depends on. These are executed in the</span>
+    <span class="token comment">// same order they are defined. Duplicate entries are allowed.</span>
+    <span class="token function">depends</span> <span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+
+    <span class="token comment">// Allows you to define a custom working directory for this task.</span>
+    <span class="token function">work_dir</span> <span class="token punctuation">(</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+
+    <span class="token comment">// The command(s) to run. These are executed in your shell.</span>
+    <span class="token function">run</span> <span class="token punctuation">(</span><span class="token builtin">string</span> <span class="token keyword">or</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span></code></pre><h3>Complex Tasks</h3><p>For a task that may need more complex behaviour, you can use a <code>.vsh</code> file in another folder. For example:</p><pre><code class="language-vsh"><span class="token comment">// scripts/some_complex_task.vsh</span>
+
+<span class="token function">println</span><span class="token punctuation">(</span><span class="token string">'Pretend this is really complex'</span><span class="token punctuation">)</span></code></pre><p>And in your config:</p><pre><code class="language-maple"><span class="token comment">// build.maple</span>
+
+task<span class="token punctuation">:</span>some_complex_task <span class="token operator">=</span> <span class="token punctuation">{</span>
+    help <span class="token operator">=</span> <span class="token string">'A really complex task'</span>
+    run <span class="token operator">=</span> <span class="token string">'v scripts/some_complex_task.vsh`
+}
+'</span></code></pre>
 
 </section>
 
@@ -198,7 +247,7 @@
 </section>
 
 
-						<div class="footer">Powered by vdoc. Generated on: 27 Nov 2024 16:23:19</div>
+						<div class="footer">Powered by vdoc. Generated on: 27 Nov 2024 16:27:39</div>
 					</div>
 					
 				</div>

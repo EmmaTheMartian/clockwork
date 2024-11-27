@@ -55,5 +55,5 @@ task:bump = {
 
 task:doc = {
 	help = 'Generates HTML documentation for the Clockwork API'
-	run = 'v doc -f html -o doc/ ./api'
+	run = 'v doc -f html -o doc/ -readme ./api'
 }
