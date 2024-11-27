@@ -35,7 +35,7 @@ jobs:
       - name: Install Dependencies
         run: v install
       - name: Build
-        run: v run . doc
+        run: v run . -PG doc
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

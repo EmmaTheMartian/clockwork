@@ -7,8 +7,9 @@ import emmathemartian.maple
 // BuildContext represents loaded data for Clockwork, being tasks and variables.
 pub struct BuildContext {
 pub mut:
-	tasks     map[string]Task
-	variables map[string]string
+	tasks         map[string]Task
+	variables     map[string]string
+	allow_plugins bool = true
 }
 
 // new creates a new BuildContext with the default values.
@@ -89,7 +90,7 @@ pub fn (con BuildContext) run_task(id string) {
 // load_config loads a config file into the BuildContext.
 pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 	// Load plugins
-	if 'plugins' in data {
+	if con.allow_plugins && 'plugins' in data {
 		for plugin in data.get('plugins').to_array() {
 			path := plugin.to_str().replace('@', global_plugin_dir) + '.maple'
 			con.load_config(maple.load_file(path) or {

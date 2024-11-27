@@ -20,6 +20,7 @@ struct Flags {
 	no_task_args bool @[short: T; xdoc: 'Prevents task arguments from being passed to tasks']
 	no_global    bool @[short: G; xdoc: 'Disable loading global.maple']
 	no_local     bool @[short: L; xdoc: 'Disable loading build.maple']
+	no_plugins   bool @[short: P; xdoc: 'Disable loading any plugins']
 }
 
 fn main() {
@@ -63,6 +64,7 @@ fn main() {
 
 	// Get and load the build context
 	mut con := api.BuildContext.new()
+	con.allow_plugins = !args.no_plugins
 	if !args.no_global {
 		con.load_config(maple.load_file(api.global_config_path) or {
 			log.error('Could not load global.maple (error: ${err})')
