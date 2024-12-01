@@ -1,7 +1,7 @@
 const clockwork_executable := join_path_single(getwd(), 'build/clockwork')
 
 // https://github.com/vlang/v/blob/master/cmd/tools/vsymlink/vsymlink_nix.c.v
-mut link_path := '/data/data/com.termux/files/usr/bin/v'
+mut link_path := '/data/data/com.termux/files/usr/bin/clockwork'
 if !is_dir('/data/data/com.termux/files') {
 	link_dir := local_bin_dir()
 	if !exists(link_dir) {
