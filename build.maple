@@ -1,6 +1,6 @@
 plugins = [ 'config/plugins/v' ]
 
-config:v_build_dir = ''
+config:v_build_dir = '.'
 config:v_build_filename = 'clockwork'
 
 task:test.example = {
