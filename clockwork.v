@@ -15,7 +15,7 @@ struct Flags {
 	help          bool @[short: h; xdoc: 'Show help and exit']
 	vars          bool @[short: a; xdoc: 'Show variables and exit']
 	tasks         bool @[short: t; xdoc: 'Show tasks and exit']
-	debug_context bool @[short: d; xdoc: 'Print the stringified context for debugging purposes']
+	debug_context bool @[short: d; xdoc: 'Print the stringified context and exit. Intended for debugging purposes']
 	// Functionality
 	no_task_args bool @[short: T; xdoc: 'Prevents task arguments from being passed to tasks']
 	no_global    bool @[short: G; xdoc: 'Disable loading global.maple']
@@ -95,6 +95,17 @@ fn main() {
 	} else if args.version {
 		println(api.version)
 		exit(0)
+	} else if args.vars {
+		for var, val in con.variables {
+			println('${var} = `${val}`')
+		}
+		exit(0)
+	} else if args.tasks {
+		con.list_tasks()
+		exit(0)
+	} else if args.debug_context {
+		println(con.str())
+		exit(0)
 	}
 	// Non-exiting arguments
 	if !args.no_task_args {
@@ -104,17 +115,6 @@ fn main() {
 			it
 		}).join(' ')
 		con.variables['raw_args'] = task_args.join(' ')
-	}
-	if args.vars {
-		for var, val in con.variables {
-			println('${var} = `${val}`')
-		}
-	}
-	if args.tasks {
-		con.list_tasks()
-	}
-	if args.debug_context {
-		println(con.str())
 	}
 
 	// Run :D
