@@ -83,6 +83,24 @@ And in your config:
 
 task:some_complex_task = {
 	help = 'A really complex task'
-	run = 'v scripts/some_complex_task.vsh`
+	run = 'v scripts/some_complex_task.vsh'
 }
 ```
+
+### Distribution for Projects
+
+Clockwork is licensed very permissively, so if you want to you can just...
+include Clockwork with your project's source.
+
+Although for most people, you do not want one Clockwork install per project, so
+there are two options for this:
+
+1. Include the install command in the readme for developers to copy and paste:
+
+	`v -RD download https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
+
+2. Include the installation script (`scripts/install.vsh`) in your project.
+
+	I would just throw this script into a `scripts` folder and name it
+	`install-clockwork.vsh` or something. Contributors will only need to use
+	it once and Clockwork will be installed.
