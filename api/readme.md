@@ -7,7 +7,7 @@ root of your codebase. Then, populate it with your plugins, configs, and tasks.
 Here is an example config for a V project:
 
 ```maple
-plugins = [ '@/v' ]
+plugins = [ 'v' ]
 
 task:doc = {
 	help = 'Runs v doc for the API'
@@ -37,9 +37,12 @@ TOML-like config language made to be simple and fast to write in.
 > represent text to be substituted with something else.
 
 ```maple
-// Import other maple files, excluding the `.maple` extension. For global
-// plugins, you can use `@/the_plugin_name`. `@` gets replaced with the path to
-// the global plugin directory (~/.config/clockwork/plugins on Linux).
+// Import other maple files, excluding the `.maple` extension. It will always
+// search for files in this order:
+//   - Local files (./some_plugin.maple)
+//   - Global files (~/.config/plugins/some_plugin.maple)
+//   - Global install (git-managed) files (~/.local/share/clockwork/config/plugins/some_plugin.maple)
+// If all else fails, an error is thrown.
 plugins ([]string)
 
 // Declare a variable/configuration option.

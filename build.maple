@@ -1,6 +1,7 @@
-plugins = [
-	'config/plugins/v'
-]
+plugins = [ 'config/plugins/v' ]
+
+config:v_build_dir = ''
+config:v_build_filename = 'clockwork'
 
 task:test.example = {
 	help = 'Tests the example project'
@@ -20,32 +21,14 @@ task:test = {
 	]
 }
 
+task:symlink = {
+	help = 'Makes a Clockwork symlink in /usr/bin'
+	run = 'v run ./config/scripts/symlink.vsh'
+}
+
 task:install = {
 	help = 'Build and installs Clockwork and its default configs'
-	depends = [ 'build.prod', 'install.config' ]
-	run = [
-		'mkdir -p ~/.local/bin/',
-		'cp ${v_build_dir}/${v_build_filename} ~/.local/bin/clockwork',
-		'echo "Installed, make sure to add \$HOME/.local/bin/ to \$PATH if needed."'
-	]
-}
-
-task:install.noconfig = {
-	help = 'Build and installs Clockwork without installing default configs'
-	depends = [ 'build.prod' ]
-	run = [
-		'mkdir -p ~/.local/bin/',
-		'cp ${v_build_dir}/${v_build_filename} ~/.local/bin/clockwork',
-		'echo "Installed, make sure to add \$HOME/.local/bin/ to \$PATH if needed."'
-	]
-}
-
-task:install.config = {
-	help = 'Copies config/ to the global config directory'
-	run = [
-		'mkdir -p ${clockwork:global_data_dir}',
-		'cp -r ./config/* ${clockwork:global_data_dir}'
-	]
+	depends = [ 'build.prod', 'symlink' ]
 }
 
 task:bump = {

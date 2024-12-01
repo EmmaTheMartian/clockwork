@@ -10,17 +10,21 @@ View the documentation [here](https://emmathemartian.github.io/clockwork/api.htm
 
 ### Automatically
 
-There is a Clockwork task to install itself which we can use here. It is
-designed for Linux but should work on macOS and WSL.
+There is a script to install Clockwork which we can use here. It is designed
+for Linux but should work on macOS and WSL.
 
-1. `git clone https://github.com/emmathemartian/clockwork && cd clockwork`
-2. `v run . install`
-3. Add `~/.local/bin` to your `$PATH` if it is not already there.
+> If you are so inclined, contributing an installation script for other
+> operating systems would be very useful :D
+
+`v -RD download https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
+
+This script will install Clockwork for your user. It will be cloned to
+`~/.local/share/clockwork/`.
 
 ### Manually
 
 ```sh
-$ git clone https://github.com/emmathemartian/clockwork
+$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork
 $ cd clockwork
 $ v -prod -o build/main .
 # You may already have this folder. You can also forego this and copy the built
@@ -32,7 +36,7 @@ $ mkdir -p ~/.config/clockwork/
 $ cp -r ./config/* ~/.config/clockwork/
 
 # Or in one line:
-$ git clone https://github.com/emmathemartian/clockwork && cd clockwork && v -prod -o build/main . && mkdir -p ~/.local/bin/ && cp ./build/main ~/.local/bin/ && mkdir -p ~/.config/clockwork/ && cp -r ./plugins ~/.config/clockwork/
+$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork && cd clockwork && v -prod -o build/main . && mkdir -p ~/.local/bin/ && cp ./build/main ~/.local/bin/ && mkdir -p ~/.config/clockwork/ && cp -r ./plugins ~/.config/clockwork/
 ```
 
 ## Uninstallation

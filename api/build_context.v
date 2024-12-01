@@ -2,7 +2,7 @@ module api
 
 import os
 import log
-import emmathemartian.maple
+import maple
 
 // BuildContext represents loaded data for Clockwork, being tasks and variables.
 pub struct BuildContext {
@@ -20,6 +20,7 @@ pub fn BuildContext.new() BuildContext {
 	con.variables['clockwork:global_data_dir'] = global_data_dir
 	con.variables['clockwork:global_plugin_dir'] = global_plugin_dir
 	con.variables['clockwork:global_config_path'] = global_config_path
+	con.variables['clockwork:work_dir'] = os.getwd()
 	return con
 }
 
@@ -92,7 +93,20 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 	// Load plugins
 	if con.allow_plugins && 'plugins' in data {
 		for plugin in data.get('plugins').to_array() {
-			path := plugin.to_str().replace('@', global_plugin_dir) + '.maple'
+			mut path := plugin.to_str() + '.maple'
+
+			if !os.exists(path) {
+				git_managed := os.join_path_single(installed_plugin_dir, path)
+				if os.exists(git_managed) {
+					path = git_managed
+				} else {
+					user_managed := os.join_path_single(global_plugin_dir, path)
+					if os.exists(user_managed) {
+						path = user_managed
+					}
+				}
+			}
+
 			con.load_config(maple.load_file(path) or {
 				log.error('Could not load plugin `${path}` (error: ${err})')
 				exit(1)

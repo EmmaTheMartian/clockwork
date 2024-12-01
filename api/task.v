@@ -1,7 +1,7 @@
 module api
 
 import log
-import emmathemartian.maple
+import maple
 
 // Task represents an executable task in the BuildContext.
 pub struct Task {

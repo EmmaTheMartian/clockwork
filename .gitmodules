@@ -1,0 +1,3 @@
+[submodule "api/maple"]
+	path = api/maple
+	url = https://github.com/emmathemartian/maple

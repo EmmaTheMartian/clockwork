@@ -1,10 +1,10 @@
 module main
 
 import api
+import api.maple
 import log
 import os
 import flag
-import emmathemartian.maple
 
 @[name: 'clockwork']
 @[version: version]
@@ -66,10 +66,19 @@ fn main() {
 	mut con := api.BuildContext.new()
 	con.allow_plugins = !args.no_plugins
 	if !args.no_global {
-		con.load_config(maple.load_file(api.global_config_path) or {
-			log.error('Could not load global.maple (error: ${err})')
-			exit(1)
+		// Load the git-managed config
+		con.load_config(maple.load_file(api.installed_config_path) or {
+			log.info('Could not load git-managed global.maple (error: ${err})')
+			map[string]maple.ValueT{}
 		})
+
+		// Load the user global config, if it exists
+		if os.exists(api.global_config_path) {
+			con.load_config(maple.load_file(api.global_config_path) or {
+				log.info('Could not load user-managed global.maple (error: ${err})')
+				map[string]maple.ValueT{}
+			})
+		}
 	}
 	if !args.no_local {
 		con.load_config(maple.load_file('build.maple') or {
