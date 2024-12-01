@@ -1,4 +1,4 @@
-const clockwork_executable := getwd() + '/build/clockwork'
+const clockwork_executable := getwd() + '/clockwork'
 
 // https://github.com/vlang/v/blob/master/cmd/tools/vsymlink/vsymlink_nix.c.v
 mut link_path := '/data/data/com.termux/files/usr/bin/v'
