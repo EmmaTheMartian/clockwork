@@ -39,6 +39,7 @@ pub fn BuildContext.new() BuildContext {
 	con.variables['clockwork:global_config_path'] = global_config_path
 	con.variables['clockwork:install_path'] = install_path
 	con.variables['clockwork:installed_plugin_dir'] = installed_plugin_dir
+	con.variables['clockwork:installed_script_dir'] = installed_script_dir
 	con.variables['clockwork:installed_config_path'] = installed_config_path
 	con.variables['clockwork:work_dir'] = os.getwd()
 	return con

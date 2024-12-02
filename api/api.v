@@ -27,5 +27,8 @@ pub const install_path = $if debug || test {
 // installed_plugin_dir is the path to the git-managed plugins.
 pub const installed_plugin_dir = os.join_path_single(install_path, 'config/plugins')
 
+// installed_script_dir is the path to the git-managed scripts.
+pub const installed_script_dir = os.join_path_single(install_path, 'config/scripts')
+
 // installed_config_path is the path to the git-managed config file (global.maple).
 pub const installed_config_path = os.join_path_single(install_path, 'config/global.maple')
