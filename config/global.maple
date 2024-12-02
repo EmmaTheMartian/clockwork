@@ -7,16 +7,16 @@
 
 task:clockwork.update = {
 	help = 'Update Clockwork'
-	work_dir = '${clockwork:installed_config_path}'
-	run = 'v ${clockwork:installed_config_path}/scripts/update.vsh'
+	work_dir = '${clockwork:install_path}'
+	run = 'v ${clockwork:install_path}/scripts/update.vsh'
 }
 
 task:clockwork.new = {
 	help = 'Create a new V project with Clockwork'
-	run = 'v ${clockwork:installed_config_path}/scripts/new.vsh'
+	run = 'v ${clockwork:install_path}/scripts/new.vsh'
 }
 
 task:clockwork.init = {
 	help = 'Initialize an existing project for Clockwork.'
-	run = 'v ${clockwork:installed_config_path}/scripts/init.vsh'
+	run = 'v ${clockwork:install_path}/scripts/init.vsh'
 }
