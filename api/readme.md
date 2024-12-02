@@ -45,6 +45,25 @@ TOML-like config language made to be simple and fast to write in.
 // If all else fails, an error is thrown.
 plugins ([]string)
 
+// Allows you to configure how Clockwork displays its data. For the most part
+// you should not use this, but some projects do prefer hiding some data or
+// changing defaults. These settings are for said projects.
+display (map) = {
+	// The category to list tasks of when using `clockwork --tasks`.
+	// No value means list all tasks.
+	default_task_category (string)
+
+	// How tasks should be listed in `clockwork --tasks`.
+	// Values: `verbose` (default), `slim`
+	default_task_list_mode (string)
+
+	// A list of categories to exclude fron `clockwork --tasks`.
+	task_list_exclude_categories ([]string)
+
+	// A list of tasks to exclude fron `clockwork --tasks`.
+	task_list_exclude_tasks ([]string)
+}
+
 // Declare a variable/configuration option.
 config:[name] (string)
 
@@ -52,6 +71,9 @@ config:[name] (string)
 task:[name] (map) = {
 	// A help message for the task, displayed with `clockwork --tasks`
 	help (string)
+
+	// A category for the task, displayed with `clockwork --tasks`
+	category (string)
 
 	// A list of tasks that this one depends on. These are executed in the
 	// same order they are defined. Duplicate entries are allowed.

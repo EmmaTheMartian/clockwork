@@ -1,19 +1,26 @@
 plugins = [ 'config/plugins/v' ]
 
+display = {
+	default_task_list_mode = 'slim'
+}
+
 config:v_build_filename = 'clockwork'
 
 task:test.example = {
 	help = 'Tests the example project'
+	category = 'test'
 	run = 'cd example && ${v} run .. run "Hello, World!"'
 }
 
 task:test.echo = {
 	help = 'Tests a simple shell command'
+	category = 'test'
 	run = 'echo "Hello, World!"'
 }
 
 task:test = {
 	help = 'Runs all tests'
+	category = 'test'
 	depends = [
 		'test.echo',
 		'test.example'
@@ -22,20 +29,24 @@ task:test = {
 
 task:symlink = {
 	help = 'Makes a Clockwork symlink in /usr/bin'
+	category = 'installation'
 	run = 'v run ./config/scripts/symlink.vsh'
 }
 
 task:install = {
 	help = 'Build and installs Clockwork and its default configs'
+	category = 'installation'
 	depends = [ 'build.prod', 'symlink' ]
 }
 
 task:bump = {
 	help = 'Bumps the Clockwork version'
+	category = 'misc'
 	run = 'v bump --${args} v.mod api/api.v'
 }
 
 task:doc = {
 	help = 'Generates HTML documentation for the Clockwork API'
+	category = 'docs'
 	run = 'v doc -f html -o doc/ -readme ./api'
 }

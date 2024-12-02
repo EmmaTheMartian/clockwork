@@ -1,4 +1,4 @@
-const clockwork_executable := join_path_single(getwd(), 'build/clockwork')
+const clockwork_executable = join_path_single(getwd(), 'build/clockwork')
 
 // https://github.com/vlang/v/blob/master/cmd/tools/vsymlink/vsymlink_nix.c.v
 mut link_path := '/data/data/com.termux/files/usr/bin/clockwork'

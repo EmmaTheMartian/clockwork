@@ -68,15 +68,15 @@ indent_style = tab
 ')
 
 mainv := create('src/main.v')!
-mainv.write_string('module main
+mainv.write_string("module main
 
 fn main() {
-	println(\'Hello World!\')
+	println('Hello World!')
 }
-')
+")
 
 buildmaple := create('build.maple')!
-buildmaple.write_string('plugins = [ \'@/v\' ]')
+buildmaple.write_string("plugins = [ '@/v' ]")
 
 // TODO: Expand the initial build.maple
 

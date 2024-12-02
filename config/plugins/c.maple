@@ -6,12 +6,14 @@ config:c_build_filename = 'main'
 
 task:run = {
 	help = 'Run c_src. Extra arguments get passed to the program'
+	category = 'run'
 	depends = [ 'build' ]
 	run = '${c_build_dir}/${c_build_filename} ${args}'
 }
 
 task:build = {
 	help = 'Build the project'
+	category = 'build'
 	run = [
 		'mkdir -p ${c_build_dir}',
 		'${cc} -o ${c_build_dir}/${c_build_filename} ${cc_args} ${c_src}'
@@ -20,6 +22,7 @@ task:build = {
 
 task:build.prod = {
 	help = 'Build the project with -O3'
+	category = 'build'
 	run = [
 		'mkdir -p ${c_build_dir}',
 		'${cc} -prod -o ${c_build_dir}/${c_build_filename} -O3 ${cc_args} ${c_src}'
@@ -28,5 +31,6 @@ task:build.prod = {
 
 task:clean = {
 	help = 'Delete c_build_dir'
+	category = 'misc'
 	run = 'rm -rf ${c_build_dir}'
 }

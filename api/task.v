@@ -10,6 +10,7 @@ pub:
 	run      []string = []
 	help     string
 	work_dir ?string
+	category string
 }
 
 // from_map loads a task from a Maple map.
@@ -50,10 +51,17 @@ pub fn Task.from_map(data map[string]maple.ValueT, task_name string) Task {
 		none
 	}
 
+	category := if 'category' in data {
+		data.get('category').to_str()
+	} else {
+		''
+	}
+
 	return Task{
 		depends:  depends
 		run:      run
 		help:     help
 		work_dir: work_dir
+		category: category
 	}
 }

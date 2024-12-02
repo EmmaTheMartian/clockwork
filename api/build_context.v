@@ -7,9 +7,26 @@ import maple
 // BuildContext represents loaded data for Clockwork, being tasks and variables.
 pub struct BuildContext {
 pub mut:
-	tasks         map[string]Task
-	variables     map[string]string
+	tasks     map[string]Task
+	variables map[string]string
+	// allow_plugins toggles if plugins are allowed to load.
 	allow_plugins bool = true
+	// display contains display settings for Clockwork.
+	display struct {
+	pub mut:
+		// default_task_category is the category to list tasks of when
+		// using `clockwork --tasks`. No value means list all tasks.
+		default_task_category string
+		// list_tasks_mode is how tasks should be listed in
+		// `clockwork --tasks`. Values: `verbose`, `slim`
+		default_task_list_mode string = 'verbose'
+		// task_list_exclude_categories is a list of categories to
+		// exclude when using `clockwork --tasks`.
+		task_list_exclude_categories []string = []
+		// task_list_exclude_categories is a list of tasks to exclude
+		// when using `clockwork --tasks`.
+		task_list_exclude_tasks []string = []
+	}
 }
 
 // new creates a new BuildContext with the default values.
@@ -114,6 +131,30 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 		}
 	}
 
+	// Load display settings
+	if 'display' in data {
+		for setting, value in data.get('display').to_map() {
+			match setting {
+				'default_task_category' {
+					con.display.default_task_category = value.to_str()
+				}
+				'default_task_list_mode' {
+					con.display.default_task_list_mode = value.to_str()
+				}
+				'task_list_exclude_categories' {
+					con.display.task_list_exclude_categories = value.to_array().map(|it| it.to_str())
+				}
+				'task_list_exclude_tasks' {
+					con.display.task_list_exclude_tasks = value.to_array().map(|it| it.to_str())
+				}
+				else {
+					log.error('Invalid setting in display settings: ${setting}')
+					exit(1)
+				}
+			}
+		}
+	}
+
 	// Load config options and tasks
 	for key, val in data {
 		if key.starts_with('config:') {
@@ -124,16 +165,48 @@ pub fn (mut con BuildContext) load_config(data map[string]maple.ValueT) {
 	}
 }
 
-// list_tasks lists all tasks in a context in a pretty and clean fashion.
-pub fn (con BuildContext) list_tasks() {
+// ListTaskOptions represent options for list_tasks_verbose and list_tasks.
+@[params]
+pub struct ListTaskOptions {
+pub:
+	// category is the category to list tasks from. Using no value ('') will
+	// list all.
+	category ?string
+	// mode is the mode to list tasks as. `'verbose'` will list tasks with
+	// their descriptions and dependencies. `'slim'` will list only task
+	// names.
+	mode ?string
+	// exclude_categories is a list of categories to exclude from the list.
+	exclude_categories ?[]string
+	// exclude_tasks is a list of tasks to exclude from the list.
+	exclude_tasks ?[]string
+}
+
+// list_tasks lists all tasks in a context with the given options.
+pub fn (con BuildContext) list_tasks(options ListTaskOptions) {
+	category := options.category or { con.display.default_task_category }
+
+	exclude_categories := options.exclude_categories or { con.display.task_list_exclude_categories }
+
+	exclude_tasks := options.exclude_tasks or { con.display.task_list_exclude_tasks }
+
+	is_verbose := options.mode or { con.display.default_task_list_mode } == 'verbose'
+
 	for name, task in con.tasks {
-		print('- ${name}')
-		if task.depends.len > 0 {
-			print(' (${task.depends.join(', ')})')
+		if (category != '' && task.category != category)
+			|| task.category in exclude_categories || name in exclude_tasks {
+			continue
 		}
-		println('')
-		if task.help != '' {
-			println('    ${task.help}')
+
+		println('- ${name}')
+		if is_verbose && task.depends.len > 0 {
+			println('    \033[1mDepends:\033[0m ${task.depends.join(', ')}')
+		}
+		if is_verbose && task.category != '' {
+			println('    \033[1mCategory:\033[0m ${task.category}')
+		}
+		if is_verbose && task.help != '' {
+			println('    \033[1mHelp:\033[0m ${task.help}')
 		}
 	}
 }
