@@ -85,7 +85,16 @@ fn main() {
 	if !args.no_local {
 		con.load_config(maple.load_file('build.maple') or {
 			log.error('Could not load build.maple (error: ${err})')
-			exit(1)
+
+			// If all tasks exist, they are global. In that case, we
+			// can still run. Otherwise we will crash.
+			for task in tasks {
+				if task !in con.tasks {
+					exit(1)
+				}
+			}
+
+			map[string]maple.ValueT{}
 		})
 	}
 

@@ -24,24 +24,15 @@ This script will install Clockwork for your user. It will be cloned to
 ### Manually
 
 ```sh
-$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork
+$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork ~/.local/share/clockwork
 $ cd clockwork
-$ v -prod -o build/main .
-# You may already have this folder. You can also forego this and copy the built
-# file to another place.
-$ mkdir -p ~/.local/bin/
-$ cp ./build/main ~/.local/bin/clockwork
-# Make Clockwork's global config directory and copy the default config there.
-$ mkdir -p ~/.config/clockwork/
-$ cp -r ./config/* ~/.config/clockwork/
-
-# Or in one line:
-$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork && cd clockwork && v -prod -o build/main . && mkdir -p ~/.local/bin/ && cp ./build/main ~/.local/bin/ && mkdir -p ~/.config/clockwork/ && cp -r ./plugins ~/.config/clockwork/
+$ v -prod -o build/clockwork .
+$ ln -s ./build/clockwork ~/.local/bin/clockwork
 ```
 
 ## Uninstallation
 
-Remove the `~/.local/bin/clockwork` executable and `~/.config/clockwork`
+Remove the `~/.local/bin/clockwork` executable and `~/.local/share/clockwork`
 
 ## Updating
 

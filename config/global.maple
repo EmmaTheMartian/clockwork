@@ -8,5 +8,15 @@
 task:clockwork.update = {
 	help = 'Update Clockwork'
 	work_dir = '${clockwork:global_data_dir}'
-	run = 'v ${clockwork:global_data_dir}/scripts/clockwork.update.vsh'
+	run = 'v ${clockwork:global_data_dir}/scripts/update.vsh'
+}
+
+task:clockwork.new = {
+	help = 'Create a new V project with Clockwork'
+	run = 'v ${clockwork:global_data_dir}/scripts/new.vsh'
+}
+
+task:clockwork.init = {
+	help = 'Initialize an existing project for Clockwork.'
+	run = 'v ${clockwork:global_data_dir}/scripts/init.vsh'
 }

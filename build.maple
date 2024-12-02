@@ -1,9 +1,5 @@
 plugins = [ 'config/plugins/v' ]
 
-display = {
-	default_task_list_mode = 'slim'
-}
-
 config:v_build_filename = 'clockwork'
 
 task:test.example = {
@@ -30,7 +26,7 @@ task:test = {
 task:symlink = {
 	help = 'Makes a Clockwork symlink in /usr/bin'
 	category = 'installation'
-	run = 'v run ./config/scripts/symlink.vsh'
+	run = 'v run ./scripts/symlink.vsh'
 }
 
 task:install = {
