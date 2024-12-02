@@ -16,7 +16,7 @@ for Linux but should work on macOS and WSL.
 > If you are so inclined, contributing an installation script for other
 > operating systems would be very useful :D
 
-`v -RD download https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
+`v download -RD https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
 
 This script will install Clockwork for your user. It will be cloned to
 `~/.local/share/clockwork/`.

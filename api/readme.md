@@ -119,7 +119,7 @@ there are two options for this:
 
 1. Include the install command in the readme for developers to copy and paste:
 
-	`v -RD download https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
+	`v download -RD https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
 
 2. Include the installation script (`scripts/install.vsh`) in your project.
 
