@@ -11,13 +11,13 @@ import flag
 @[version: version]
 struct Flags {
 	// Info
-	version       bool    @[short: v; xdoc: 'Show version and exit']
-	help          bool    @[short: h; xdoc: 'Show help and exit']
-	vars          bool    @[short: a; xdoc: 'Show variables and exit']
-	tasks         bool    @[short: t; xdoc: 'Show tasks and exit']
-	list_mode     ?string @[xdoc: 'How to list tasks (`verbose` or `slim`). Defaults to `verbose`']
-	list_category ?string @[xdoc: 'The category to list tasks from. Defaults to \'\' (all)']
-	debug_context bool    @[short: d; xdoc: 'Print the stringified context and exit. Intended for debugging purposes']
+	version       bool   @[short: v; xdoc: 'Show version and exit']
+	help          bool   @[short: h; xdoc: 'Show help and exit']
+	vars          bool   @[short: a; xdoc: 'Show variables and exit']
+	tasks         bool   @[short: t; xdoc: 'Show tasks and exit']
+	list_mode     string @[long: 'list-mode'; xdoc: 'How to list tasks (`verbose` or `slim`). Defaults to `verbose`']
+	list_category string @[long: 'list-category'; xdoc: 'The category to list tasks from. Defaults to \'\' (all)']
+	debug_context bool   @[short: d; xdoc: 'Print the stringified context and exit. Intended for debugging purposes']
 	// Functionality
 	no_task_args bool @[short: T; xdoc: 'Prevents task arguments from being passed to tasks']
 	no_global    bool @[short: G; xdoc: 'Disable loading global.maple']
@@ -112,7 +112,10 @@ fn main() {
 		}
 		exit(0)
 	} else if args.tasks {
-		con.list_tasks(category: args.list_category, mode: args.list_mode)
+		con.list_tasks(
+			category: if args.list_category == '' { none } else { args.list_category }
+			mode:     if args.list_mode == '' { none } else { args.list_mode }
+		)
 		exit(0)
 	} else if args.debug_context {
 		println(con.str())
