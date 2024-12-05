@@ -5,7 +5,7 @@ if !exists(repo_path) {
 	chdir(repo_path)!
 } else {
 	chdir(repo_path)!
-	system('git pull --recursive')
+	system('git pull --recurse-submodules')
 }
 
 system('v run . install')
