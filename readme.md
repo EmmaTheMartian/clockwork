@@ -32,17 +32,11 @@ $ ln -s ./build/clockwork ~/.local/bin/clockwork
 
 ## Uninstallation
 
-Remove the `~/.local/bin/clockwork` executable and `~/.local/share/clockwork`
+Remove the `~/.local/bin/clockwork` symlink and `~/.local/share/clockwork`
 
 ## Updating
 
-To update just the Clockwork executable: `clockwork -L clockwork.update`
-
-To update just the configs (this will overwrite any changes made in
-`global.config`, make sure to back it up if you have changed it):
-`clockwork -L clockwork.update_configs`
-
-> `-L` prevents Clockwork from trying to load a local `build.maple`.
+To update just the Clockwork executable: `clockwork --update`
 
 ## Basic Rundown
 

@@ -23,6 +23,9 @@ struct Flags {
 	no_global    bool @[short: G; xdoc: 'Disable loading global.maple']
 	no_local     bool @[short: L; xdoc: 'Disable loading build.maple']
 	no_plugins   bool @[short: P; xdoc: 'Disable loading any plugins']
+	update       bool @[long: update; xdoc: 'Shorthand for `clockwork -L clockwork.update`']
+	init         bool @[long: init; xdoc: 'Shorthand for `clockwork -L clockwork.init`']
+	new          bool @[long: new; xdoc: 'Shorthand for `clockwork -L clockwork.new`']
 }
 
 fn main() {
@@ -62,6 +65,23 @@ fn main() {
 	if no_matches.len > 0 {
 		log.error('Invalid flags: ${no_matches}')
 		exit(1)
+	}
+
+	// If --update, --new, or --init were passed, ignore even loading the
+	// build context
+	if args.update {
+		os.chdir(api.install_path) or {
+			log.error('Failed to chdir to ${api.install_path} (error: ${err})')
+			exit(1)
+		}
+		os.system('v run config/scripts/update.vsh')
+		exit(0)
+	} else if args.init {
+		os.system('v run ${api.installed_script_dir}/init.vsh')
+		exit(0)
+	} else if args.new {
+		os.system('v run ${api.installed_script_dir}/new.vsh')
+		exit(0)
 	}
 
 	// Get and load the build context
