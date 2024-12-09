@@ -1,3 +1,4 @@
-plugins = [ 'c' ]
+// If you are copying this example, just use `c` for the plugin path.
+plugins = [ '../config/plugins/c' ]
 
 config:c_src = 'src/*.c'

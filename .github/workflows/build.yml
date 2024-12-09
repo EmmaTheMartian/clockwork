@@ -1,0 +1,32 @@
+name: Build Clockwork
+
+on:
+  workflow_run:
+    workflows: [test]
+    types: [completed]
+    paths:
+      - 'api/**.v'
+      - 'clockwork.v'
+      - '.github/workflows/build.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "build"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup V
+        uses: vlang/setup-v@v1.4
+        with:
+          stable: true
+      - name: Build
+        run: v run . -PG test

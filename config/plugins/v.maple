@@ -14,7 +14,7 @@ task:run = {
 task:deps = {
 	help = 'Download project dependencies'
 	category = 'misc'
-	run = 'v install'
+	run = '${v} install'
 }
 
 task:build = {
@@ -56,5 +56,5 @@ task:clean = {
 task:fmt = {
 	help = 'Run v fmt on the whole project'
 	category = 'misc'
-	run = 'v -w fmt .'
+	run = '${v} -w fmt .'
 }

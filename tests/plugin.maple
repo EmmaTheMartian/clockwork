@@ -1,0 +1,9 @@
+config:greeting = 'Hello'
+config:subject = 'World'
+config:message = '${greeting}, ${subject}'
+
+task:greet = {
+	help = 'Greet the configured subject with the configured greeting'
+	category = 'misc'
+	run = 'echo "${message}"'
+}

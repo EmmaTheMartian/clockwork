@@ -36,6 +36,9 @@ TOML-like config language made to be simple and fast to write in.
 > The parenthesis represent the type of the value. Text in \[brackets\]
 > represent text to be substituted with something else.
 
+> Tasks **must** be prefixed using `task:` and config values **must** be
+> prefixed using `config:`, otherwise Clockwork will not read them.
+
 ```maple
 // Import other maple files, excluding the `.maple` extension. It will always
 // search for files in this order:
@@ -108,6 +111,18 @@ task:some_complex_task = {
 	run = 'v scripts/some_complex_task.vsh'
 }
 ```
+
+## Naming Scheme
+
+Tasks and config values should use `snake_case` with periods (`.`) to denote a
+"variant" and using colons (`:`) for "namespaces."
+
+Example for a "variant:" `build` vs `build.prod`
+
+Example for a "namespace:" `clockwork:update`
+
+> Neither Maple or Clockwork support actual namespacing, so if you do want to
+> separate your tasks or configs, you can prefix them with `something:`.
 
 ### Distribution for Projects
 

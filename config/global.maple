@@ -5,18 +5,33 @@
 // Note that this config is managed by Git! If you want a personal global
 // config, use ~/.config/clockwork/global.maple
 
-task:clockwork.update = {
+task:clockwork:update = {
 	help = 'Update Clockwork'
 	work_dir = '${clockwork:install_path}'
 	run = 'v ${clockwork:installed_script_dir}/update.vsh'
 }
 
-task:clockwork.new = {
+task:clockwork:new = {
 	help = 'Create a new V project with Clockwork'
 	run = 'v ${clockwork:installed_script_dir}/new.vsh'
 }
 
-task:clockwork.init = {
+task:clockwork:init = {
 	help = 'Initialize an existing project for Clockwork.'
 	run = 'v ${clockwork:installed_script_dir}/init.vsh'
+}
+
+task:clockwork.update = {
+	help = 'DEPRECATED FOR REMOVAL. Migrate to clockwork:update instead'
+	depends = [ 'clockwork:update' ]
+}
+
+task:clockwork.new = {
+	help = 'DEPRECATED FOR REMOVAL. Migrate to clockwork:new instead'
+	depends = [ 'clockwork:new' ]
+}
+
+task:clockwork.init = {
+	help = 'DEPRECATED FOR REMOVAL. Migrate to clockwork:init instead'
+	depends = [ 'clockwork:init' ]
 }

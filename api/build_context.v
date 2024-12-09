@@ -50,7 +50,15 @@ pub fn BuildContext.new() BuildContext {
 pub fn (con BuildContext) format(str string) string {
 	mut s := str
 	for key, val in con.variables {
-		s = s.replace('\${${key}}', val)
+		if !s.contains_u8(`$`) {
+			return s
+		}
+
+		s = s.replace('\${${key}}', if val.contains_u8(`$`) {
+			con.format(val)
+		} else {
+			val
+		})
 	}
 	return s
 }

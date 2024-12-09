@@ -1,0 +1,10 @@
+plugins = [ '../config/plugins/v', 'plugin' ]
+
+config:greeting = 'Hola'
+config:subject = 'mundo'
+
+task:doublegreet = {
+	help = 'Double the greetings, double the fun!'
+	category = 'misc'
+	depends = [ 'greet', 'greet' ]
+}

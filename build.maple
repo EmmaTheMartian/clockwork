@@ -5,7 +5,8 @@ config:v_build_filename = 'clockwork'
 task:test.example = {
 	help = 'Tests the example project'
 	category = 'test'
-	run = 'cd example && ${v} run .. run "Hello, World!"'
+	work_dir = 'example'
+	run = '${v} run .. run "Hello, World!"'
 }
 
 task:test.echo = {
@@ -14,10 +15,18 @@ task:test.echo = {
 	run = 'echo "Hello, World!"'
 }
 
+task:test.api = {
+	help = 'Tests Clockwork\'s API'
+	category = 'test'
+	work_dir = 'tests'
+	run = '${v} test .'
+}
+
 task:test = {
 	help = 'Runs all tests'
 	category = 'test'
 	depends = [
+		'test',
 		'test.echo',
 		'test.example'
 	]

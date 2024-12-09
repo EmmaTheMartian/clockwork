@@ -1,0 +1,32 @@
+name: Test Clockwork
+
+on:
+  push:
+    paths:
+      - 'api/**.v'
+      - 'tests/*'
+      - 'config/*'
+      - 'example/*'
+      - '.github/workflows/test.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: "test"
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup V
+        uses: vlang/setup-v@v1.4
+        with:
+          stable: true
+      - name: Build
+        run: v run . -PG test

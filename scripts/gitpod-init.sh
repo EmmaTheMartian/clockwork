@@ -15,6 +15,3 @@ then
 fi
 sudo ./v symlink
 cd ..
-
-# Install dependencies
-clockwork deps
