@@ -2,12 +2,8 @@ name: Build Clockwork
 
 on:
   workflow_run:
-    workflows: [test]
+    workflows: [Test Clockwork]
     types: [completed]
-    paths:
-      - 'api/**.v'
-      - 'clockwork.v'
-      - '.github/workflows/build.yml'
 
 permissions:
   contents: read
@@ -16,6 +12,7 @@ concurrency:
   group: "build"
   cancel-in-progress: false
 
+# TODO: Add jobs to build on Windows and macOS
 jobs:
   build-linux:
     runs-on: ubuntu-latest
