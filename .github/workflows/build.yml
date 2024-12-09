@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  build-linux:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,4 +29,9 @@ jobs:
         with:
           stable: true
       - name: Build
-        run: v run . -PG test
+        run: v run . build.prod
+      - name: Archive built executable
+        uses: actions/upload-artifact@v4
+        with:
+          name: clockwork-linux
+          path: build/clockwork
