@@ -26,7 +26,7 @@ task:test = {
 	help = 'Runs all tests'
 	category = 'test'
 	depends = [
-		'test',
+		'test.api',
 		'test.echo',
 		'test.example'
 	]
