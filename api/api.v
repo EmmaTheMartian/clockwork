@@ -2,7 +2,7 @@ module api
 
 import os
 
-pub const version = '1.1.0'
+pub const version = '1.2.0'
 
 // global_data_dir is the path to the folder containing Clockwork's global data
 // and configs.
