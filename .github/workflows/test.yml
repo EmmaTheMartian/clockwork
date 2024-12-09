@@ -29,4 +29,4 @@ jobs:
         with:
           stable: true
       - name: Build
-        run: v run . -PG test
+        run: v run . test
