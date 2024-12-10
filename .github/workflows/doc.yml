@@ -5,6 +5,7 @@ on:
     paths:
       - 'api/**.v'
       - 'api/**.md'
+      - 'build.maple'
       - '.github/workflows/doc.yml'
 
 permissions:
