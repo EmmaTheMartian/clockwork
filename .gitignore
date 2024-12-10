@@ -24,3 +24,6 @@ bin/
 
 # Local Clockwork install
 /clockwork/
+
+# Generated documentation
+/doc/

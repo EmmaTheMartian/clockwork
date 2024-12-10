@@ -4,7 +4,7 @@ A language-agnostic build tool wrote to be efficient, easy, and extensible.
 
 > Clockwork is still in beta and is unstable!
 
-View the documentation [here](https://emmathemartian.github.io/clockwork/api.html).
+View the documentation [here](https://emmathemartian.github.io/clockwork/).
 
 ## Installation
 
@@ -55,7 +55,7 @@ Then run `clockwork hello` to see `Hello, World!` in the terminal.
 
 > For a proper example, see the `example/` directory.
 
-> You can also view the documentation [here](https://emmathemartian.github.io/clockwork/api.html).
+> You can also view the documentation [here](https://emmathemartian.github.io/clockwork/).
 
 ## License
 
