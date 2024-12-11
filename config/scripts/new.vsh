@@ -80,7 +80,7 @@ v.mod linguist-language=V
 .vdocignore linguist-language=ignore
 ')
 
-create_and_write('editorconfig', '[*]
+create_and_write('.editorconfig', '[*]
 charset = utf-8
 end_of_line = lf
 insert_final_newline = true
