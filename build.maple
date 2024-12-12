@@ -58,3 +58,9 @@ task:doc = {
 		'mv -v doc/api.html doc/index.html'
 	]
 }
+
+task:git.update_submodules = {
+	help = 'Updates each submodule to its latest commit'
+	category = 'git'
+	run = 'git submodule update --recursive --remote'
+}
