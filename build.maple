@@ -35,7 +35,7 @@ task:test = {
 task:symlink = {
 	help = 'Makes a Clockwork symlink in /usr/bin'
 	category = 'installation'
-	run = 'v run ./scripts/symlink.vsh'
+	run = '${v} run ./cmd/symlink/'
 }
 
 task:install = {
@@ -47,14 +47,14 @@ task:install = {
 task:bump = {
 	help = 'Bumps the Clockwork version'
 	category = 'misc'
-	run = 'v bump --${args} v.mod api/api.v'
+	run = '${v} bump --${args} v.mod api/api.v'
 }
 
 task:doc = {
 	help = 'Generates HTML documentation for the Clockwork API'
 	category = 'docs'
 	run = [
-		'v doc -f html -o doc/ -readme ./api',
+		'${v} doc -f html -o doc/ -readme ./api',
 		'mv -v doc/api.html doc/index.html'
 	]
 }
