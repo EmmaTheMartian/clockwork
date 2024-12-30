@@ -6,27 +6,27 @@ $if tinyc {
 	#flag -luser32
 }
 
-fn setup_symlink() {
-	println('symlinking on windows')
+const clockwork_executable = os.join_path_single(os.getwd(), 'build/clockwork.exe')
 
+fn setup_symlink() {
 	// Create a symlink in a new local folder (.\.bin\clockwork.exe)
 	// Puts `v` in %PATH% without polluting it with anything else (like make.bat).
 	// This will make `v` available on cmd.exe, PowerShell, and MinGW(MSYS)/WSL/Cygwin
-	vdir := os.real_path(os.dir(clockwork_executable))
-	symlinkdir := os.join_path(vdir, '.bin')
-	mut clockwork_symlink := os.join_path(symlinkdir, 'clockwork.exe')
+	clockwork_dir := os.real_path(os.dir(clockwork_executable))
+	symlink_dir := os.join_path(clockwork_dir, '.bin')
+	mut clockwork_symlink := os.join_path(symlink_dir, 'clockwork.exe')
 	// Remove old symlink first (v could have been moved, symlink rerun)
-	if !os.exists(symlinkdir) {
-		os.mkdir(symlinkdir) or { panic(err) }
+	if !os.exists(symlink_dir) {
+		os.mkdir(symlink_dir) or { panic(err) }
 	} else {
 		if os.exists(clockwork_symlink) {
 			os.rm(clockwork_symlink) or { panic(err) }
 		} else {
-			clockwork_symlink = os.join_path(symlinkdir, 'clockwork.bat')
+			clockwork_symlink = os.join_path(symlink_dir, 'clockwork.bat')
 			if os.exists(clockwork_symlink) {
 				os.rm(clockwork_symlink) or { panic(err) }
 			}
-			clockwork_symlink = os.join_path(symlinkdir, 'clockwork.exe')
+			clockwork_symlink = os.join_path(symlink_dir, 'clockwork.exe')
 		}
 	}
 	// First, try to create a native symlink at .\.bin\clockwork.exe
@@ -35,7 +35,7 @@ fn setup_symlink() {
 		// do batch file creation instead
 		eprintln('Could not create a native symlink: ${err}')
 		eprintln('Creating a batch file instead...')
-		clockwork_symlink = os.join_path(symlinkdir, 'clockwork.bat')
+		clockwork_symlink = os.join_path(symlink_dir, 'clockwork.bat')
 		if os.exists(clockwork_symlink) {
 			os.rm(clockwork_symlink) or { panic(err) }
 		}
@@ -58,7 +58,7 @@ fn setup_symlink() {
 	// if the above succeeded, and we cannot get the value, it may simply be empty
 	sys_env_path := get_reg_value(reg_sys_env_handle, 'Path') or { '' }
 	current_sys_paths := sys_env_path.split(os.path_delimiter).map(it.trim('/${os.path_separator}'))
-	mut new_paths := [symlinkdir]
+	mut new_paths := [symlink_dir]
 	for p in current_sys_paths {
 		if p == '' {
 			continue
