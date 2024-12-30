@@ -10,11 +10,7 @@ View the documentation [here](https://emmathemartian.github.io/clockwork/).
 
 ### Automatically
 
-There is a script to install Clockwork which we can use here. It is designed
-for Linux but should work on macOS and WSL.
-
-> If you are so inclined, contributing an installation script for other
-> operating systems would be very useful :D
+There is a script to install Clockwork which we can use here.
 
 `v download -RD https://raw.githubusercontent.com/EmmaTheMartian/clockwork/refs/heads/main/scripts/install.vsh`
 
