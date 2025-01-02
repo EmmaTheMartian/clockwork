@@ -3,12 +3,19 @@ config:v_main = '.'
 config:v_build_dir = 'build'
 config:v_build_filename = 'main'
 config:v_args = ''
+config:v_debug_args = '-cg'
 config:v_program_args = ''
 
 task:run = {
 	help = 'Run v_main. Extra arguments get passed to the program'
 	category = 'run'
 	run = '${v} ${v_args} run ${v_main} ${args}'
+}
+
+task:run.debug = {
+	help = 'Run v_main with debug flags. Extra arguments get passed to the program'
+	category = 'run'
+	run = '${v} ${v_args} ${v_debug_args} run ${v_main} ${args}'
 }
 
 task:deps = {
