@@ -30,6 +30,7 @@ struct Flags {
 
 fn main() {
 	mut logger := log.Log{}
+	logger.set_output_stream(os.stdout())
 	logger.set_custom_time_format('hh:mm:ss')
 	logger.set_level(.debug)
 	log.set_logger(logger)

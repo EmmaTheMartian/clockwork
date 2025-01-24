@@ -3,7 +3,7 @@ config:v_main = '.'
 config:v_build_dir = 'build'
 config:v_build_filename = 'main'
 config:v_args = ''
-config:v_debug_args = '-cg'
+config:v_debug_args = '-g'
 config:v_program_args = ''
 
 task:run = {
