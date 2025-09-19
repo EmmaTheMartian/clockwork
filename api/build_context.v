@@ -2,7 +2,7 @@ module api
 
 import os
 import log
-import maple
+import emmathemartian.maple
 
 // BuildContext represents loaded data for Clockwork, being tasks and variables.
 pub struct BuildContext {
