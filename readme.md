@@ -24,7 +24,7 @@ $ git clone https://github.com/emmathemartian/clockwork ~/.local/share/clockwork
 $ cd clockwork
 $ v install .
 $ v -prod -o build/clockwork .
-$ ln -s ./build/clockwork ~/.local/bin/clockwork
+$ ln -s $(pwd)/build/clockwork ~/.local/bin/clockwork
 ```
 
 ## Uninstallation
