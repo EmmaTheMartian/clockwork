@@ -1,7 +1,7 @@
 module main
 
 import api
-import api.maple
+import emmathemartian.maple
 import log
 import os
 import flag

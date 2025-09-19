@@ -4,5 +4,5 @@ Module {
 	version: '1.2.0'
 	license: 'MIT/Unlicense'
 	repo: 'https://github.com/emmathemartian/clockwork'
-	dependencies: []
+	dependencies: ['EmmaTheMartian.Maple']
 }

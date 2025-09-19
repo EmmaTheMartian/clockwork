@@ -20,8 +20,9 @@ This script will install Clockwork for your user. It will be cloned to
 ### Manually
 
 ```sh
-$ git clone --recurse-submodules https://github.com/emmathemartian/clockwork ~/.local/share/clockwork
+$ git clone https://github.com/emmathemartian/clockwork ~/.local/share/clockwork
 $ cd clockwork
+$ v install .
 $ v -prod -o build/clockwork .
 $ ln -s ./build/clockwork ~/.local/bin/clockwork
 ```
